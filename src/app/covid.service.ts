@@ -42,6 +42,13 @@ export interface NationData {
   death: number;
 }
 
+export interface LocationData { 
+  name: string;
+  positive: number;
+  negative: number;
+  death: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -49,19 +56,35 @@ export class CovidService {
 
   constructor(private client: HttpClient) { }
 
-  getAllStateData(): Observable<StateData[]> {
-    return this.client.get<StateData[]>("https://covidtracking.com/api/v1/states/current.json");
+  getAllStateData(): Observable<LocationData[]> {
+    return this.client.get<StateData[]>("https://covidtracking.com/api/v1/states/current.json")
+      .pipe(map((d) => d.map((x) => ({ 
+        name: this.getStateName(x.state), 
+        positive: x.positive, 
+        negative: x.negative, 
+        death: x.death
+      }))));
   }
 
-  getUnitedStatesData(): Observable<NationData> {
-    return this.client.get<NationData[]>('https://covidtracking.com/api/v1/us/current.json').pipe(map((d) => d[0]));
+  getUnitedStatesData(): Observable<LocationData> {
+    return this.client.get<NationData[]>('https://covidtracking.com/api/v1/us/current.json')
+      .pipe(map((d) => 
+      ({
+        name: 'United States',
+        positive: d[0].positive,
+        negative: d[0].negative,
+        death: d[0].death
+      })));
   }
 
-  getStateData(state: string) {
+  getStateData(stateAbbreviation: string) {
+
+    let state = stateAbbreviation.length == 2 ? this.getStateName(stateAbbreviation) : stateAbbreviation;
+
     return this.getAllStateData()
       .pipe(
         map((sd) => {
-          let matchingState = sd.filter((x) => x.state == state);
+          let matchingState = sd.filter((x) => x.name == state);
           if (matchingState.length > 0) {
             return matchingState[0];
           }

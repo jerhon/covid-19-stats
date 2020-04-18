@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StateStyle } from '../us-map/us-map.component';
-import { StateData, NationData, CovidService } from '../covid.service';
+import { StateData, NationData, CovidService, LocationData } from '../covid.service';
 
 @Component({
   selector: 'app-interactive-map',
@@ -9,16 +9,9 @@ import { StateData, NationData, CovidService } from '../covid.service';
 })
 export class InteractiveMapComponent implements OnInit {
 
-  public usData: NationData;
-  public stateData: StateData;
-  public stateStyles: StateStyle[];
-  public data: { 
-    name: string;
-    positive: number;
-    negative: number;
-    death: number;
-  }
-
+  public usData: LocationData;
+  public data: LocationData;
+  
   constructor(private service: CovidService) { }
 
   ngOnInit() {
@@ -26,18 +19,17 @@ export class InteractiveMapComponent implements OnInit {
       .getUnitedStatesData()
       .subscribe((us) =>  {
         this.usData = us;
-        this.data = { name: 'United States', ...us };
+        this.data = us;
       });
   }
 
   stateSelected(state: string) {
     this.service.getStateData(state).subscribe( 
-      (sd) => { 
-        if (sd) {
-          this.stateData = sd; 
-          this.data = { name: this.service.getStateName(sd.state), ...sd };
+      (stateData) => { 
+        if (stateData) {
+          this.data = stateData;
         } else {
-          this.data = { name: 'United States', ...this.usData }
+          this.data = this.usData;
         }
       }
     );

@@ -1,1 +1,35 @@
-<p>datasheet works!</p>
+<div>
+    <h1>United States Statistics</h1>
+    <table class="table table-vertical" *ngIf="this.usData" id="usTable">
+        <colgroup>
+            <col width="80" />
+            <col width="*" /> 
+        </colgroup>
+        <tbody>
+            <tr><td>Confirmed</td><td>{{this.usData.positive | number}}</td></tr>
+            <tr><td>Negative</td><td>{{this.usData.negative | number}}</td></tr>
+            <tr><td>Deaths</td><td>{{this.usData.death | number}}</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h1>State Statistics</h1>
+    <table class="table" *ngIf="this.statesData" id="stateTable">
+        <colgroup>
+            <col width="150" />
+            <col width="*" /> 
+        </colgroup>
+        <thead>
+            <tr>
+                <th>State</th>
+                <th>Confirmed</th>
+                <th>Negative</th>
+                <th>Deaths</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let state of this.statesData"><td>{{state.name}}</td><td>{{state.positive | number}}</td><td>{{state.negative | number}}</td><td>{{state.death | number}}</td></tr>
+        </tbody>
+    </table>
+</div>

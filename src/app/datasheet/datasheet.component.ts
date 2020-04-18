@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocationData, CovidService } from '../covid.service';
 
 @Component({
   selector: 'app-datasheet',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DatasheetComponent implements OnInit {
 
-  constructor() { }
+  usData: LocationData;
+  statesData: LocationData[];
+
+  constructor(private service: CovidService) { }
 
   ngOnInit(): void {
+    this.service.getUnitedStatesData().subscribe((usData) => this.usData = usData);
+    this.service.getAllStateData().subscribe((stateData) => this.statesData = stateData.sort((a,b) => b.positive - a.positive));
   }
-
+  
 }
