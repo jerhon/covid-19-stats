@@ -17,8 +17,12 @@
 <clr-modal [(clrModalOpen)]="this.userNotAccepted" [clrModalClosable]="false">
     <h3 class="modal-title">Disclaimer</h3>
     <div class="modal-body">
-        <p>This application is using an open service to obtain data related to the COVID-19 pandemic.  This application is meant to be informative only, and should not be used in an private or official capacity to make decisions regarding the pandemic.</p>
 
+        <h4>Overview</h4>
+        <p>This application is meant to be informative only, and should not be used in an private or official capacity to make decisions regarding the COVID-19 pandemic.</p>
+        <p>This application uses data from <a href="https://covidtracking.com/">The COVID Tracking Project</a> as it's source.  Please refer to that site for any questions regarding the data and it's accuracy.</p>
+
+        <h4>Terms</h4>
         <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
     </div>
     <div class="modal-footer">
