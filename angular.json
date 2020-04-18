@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "covid-tracker": {
+    "covid-19-stats": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/covid-tracker",
+            "outputPath": "dist/covid-19-stats",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,18 +72,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "covid-tracker:build"
+            "browserTarget": "covid-19-stats:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "covid-tracker:build:production"
+              "browserTarget": "covid-19-stats:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "covid-tracker:build"
+            "browserTarget": "covid-19-stats:build"
           }
         },
         "test": {
@@ -120,16 +120,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "covid-tracker:serve"
+            "devServerTarget": "covid-19-stats:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "covid-tracker:serve:production"
+              "devServerTarget": "covid-19-stats:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "covid-tracker"
+  "defaultProject": "covid-19-stats"
 }
