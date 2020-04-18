@@ -1,0 +1,26 @@
+<div class="clr-row" id="main-area">
+    <div class="clr-col-12 clr-col-lg-9">
+        <app-us-map (stateClicked)="this.stateSelected($event)">
+        </app-us-map>
+    </div>
+    <div class="clr-col-12 clr-col-lg-3" >
+        <span class="spinner spinner-lg" *ngIf="!this.data" style="margin-left: auto; margin-right: auto;">
+            Loading...
+        </span>
+        <ng-container *ngIf="this.data">
+        <h1>{{this.data.name}}</h1>
+        <p>Documented cases of COVID-19.</p>
+        <table class="table table-vertical">
+            <colgroup>
+                <col width="75" />
+                <col width="*" /> 
+            </colgroup>
+            <tbody>
+                <tr><td>Confirmed</td><td>{{this.data.positive | number}}</td></tr>
+                <tr><td>Negative</td><td>{{this.data.negative | number}}</td></tr>
+                <tr><td>Deaths</td><td>{{this.data.death | number}}</td></tr>
+            </tbody>
+        </table>
+        </ng-container>
+    </div>
+</div>

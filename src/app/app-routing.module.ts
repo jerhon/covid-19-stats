@@ -1,8 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
+import { DatasheetComponent } from './datasheet/datasheet.component';
 
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', pathMatch:'full', redirectTo: 'map' },
+  { path: 'map', component: InteractiveMapComponent },
+  { path: 'datasheet', component: DatasheetComponent }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

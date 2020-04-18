@@ -1,0 +1,36 @@
+#container {
+    width: 100%;
+}
+
+svg {
+    width: 100%;
+}
+
+path {
+    pointer-events: all;
+
+    fill-rule: evenodd;
+    fill:#e6e6e6;
+    fill-opacity:1;
+    stroke:#999;
+    //stroke-width:0.28222218;
+    stroke-width: 0.1;
+    stroke-miterlimit:4;
+    stroke-opacity:1;
+    stroke-dasharray:none
+}
+
+path#labels {
+    stroke: black;
+    stroke-width: 0.05;
+    fill: #666;
+    pointer-events: none;
+}
+
+path:not(#labels):hover {
+    fill: #b6b6b6;
+}
+
+.selected {
+    fill: #999;
+}
