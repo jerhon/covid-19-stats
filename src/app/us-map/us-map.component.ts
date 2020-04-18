@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, Output, ElementRef, Input } from '@angular/core';
 import { Subject } from 'rxjs';
-import { PathLocationStrategy } from '@angular/common';
 
-export interface StateStyle {
-  state: string;
-  fill: string;
+export interface StateSelected {
+  stateAbbreviation: string;
 }
 
 @Component({
@@ -18,11 +16,8 @@ export class UsMapComponent implements OnInit {
 
   selectedPath: SVGPathElement;
 
-  @Input() 
-  public stateStyles: StateStyle[];
-
   @Output()
-  public stateClicked: Subject<string> = new Subject<string>();
+  public stateClicked: Subject<StateSelected> = new Subject<StateSelected>();
 
   @ViewChild("map")
   public svg: ElementRef<SVGElement>;
@@ -32,26 +27,20 @@ export class UsMapComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    /* if (this.stateStyles) {
-      let style = this.stateStyles.find((st) => st.fill == path.id);
-      if (style) {
-        path.style.fill = style.fill;
-      }
-    }*/
 
     let paths = this.svg.nativeElement.getElementsByTagName("path");
     for (let i = 0; i < paths.length; i++) {
       let path = paths[i];
       if (path.id != 'labels') {
         path.addEventListener("click", (me: MouseEvent) => {
-          
           this.selectedPath?.classList?.remove('selected');
           if (this.selectedPath == path)  {
+            this.selectedPath = null;
             this.stateClicked.next(null);
           } else {
             this.selectedPath = path;
             this.selectedPath.classList.add('selected');
-            this.stateClicked.next(path.id);
+            this.stateClicked.next({ stateAbbreviation: path.id });
           }
           return false;
         });
