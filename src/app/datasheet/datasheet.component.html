@@ -6,8 +6,13 @@
             <col width="*" /> 
         </colgroup>
         <tbody>
-            <tr><td>Confirmed</td><td>{{this.usData.positive | number}}</td></tr>
+            <tr><td colspan="2">Test Results</td></tr>
+            <tr><td>Total Results</td><td>{{this.usData.totalTestResults | number}}</td></tr>
+            <tr><td>Positive</td><td>{{this.usData.positive | number}}</td></tr>
             <tr><td>Negative</td><td>{{this.usData.negative | number}}</td></tr>
+            
+            <tr><td colspan="2">Outcomes</td></tr>
+            <tr><td>Hospitalized</td><td>{{this.usData.hospitalized | number}}</td></tr>
             <tr><td>Deaths</td><td>{{this.usData.death | number}}</td></tr>
         </tbody>
     </table>
@@ -23,13 +28,24 @@
         <thead>
             <tr>
                 <th>State</th>
-                <th>Confirmed</th>
+                <th>Positive</th>
                 <th>Negative</th>
+                <th>Total Tests</th>
+
                 <th>Deaths</th>
+                <th>Hospitalized</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let state of this.statesData"><td>{{state.name}}</td><td>{{state.positive | number}}</td><td>{{state.negative | number}}</td><td>{{state.death | number}}</td></tr>
+            <tr *ngFor="let state of this.statesData">
+                <td>{{state.name}}</td>
+                <td>{{state.positive | number}}</td>
+                <td>{{state.negative | number}}</td>
+                <td>{{state.totalTestResults | number}}</td>
+
+                <td>{{state.death | number}}</td>
+                <td>{{state.hospitalized | number}}</td>
+            </tr>
         </tbody>
     </table>
 </div>

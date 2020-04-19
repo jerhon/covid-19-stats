@@ -1,6 +1,6 @@
 <div class="clr-row" id="main-area">
     <div class="clr-col-12 clr-col-lg-9">
-        <app-us-map (stateClicked)="this.stateSelected($event)">
+        <app-us-map (stateClicked)="this.stateSelected($event)" [stateStyles]="this.stateStyles">
         </app-us-map>
     </div>
     <div class="clr-col-12 clr-col-lg-3" >
@@ -8,19 +8,33 @@
             Loading...
         </span>
         <ng-container *ngIf="this.data">
-        <h1>{{this.data.name}}</h1>
-        <p>Documented cases of COVID-19.</p>
-        <table class="table table-vertical">
-            <colgroup>
-                <col width="75" />
-                <col width="*" /> 
-            </colgroup>
-            <tbody>
-                <tr><td>Confirmed</td><td>{{this.data.positive | number}}</td></tr>
-                <tr><td>Negative</td><td>{{this.data.negative | number}}</td></tr>
-                <tr><td>Deaths</td><td>{{this.data.death | number}}</td></tr>
-            </tbody>
-        </table>
+            <h1>{{this.data.name}}</h1>
+            <p>Documented cases of COVID-19.  All numbers are cumulative.  Some data points are not available for specific states.</p>
+
+            <h3>Test Results</h3>
+            <table class="table table-vertical">
+                <colgroup>
+                    <col width="75" />
+                    <col width="*" /> 
+                </colgroup>
+                <tbody>
+                    <tr><td>Total</td><td>{{this.data.totalTestResults | number}}</td></tr>
+                    <tr><td>Positive</td><td>{{this.data.positive | number}}</td></tr>
+                    <tr><td>Negative</td><td>{{this.data.negative | number}}</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Outcomes</h3>
+            <table class="table table-vertical">
+                <colgroup>
+                    <col width="75" />
+                    <col width="*" /> 
+                </colgroup>
+                <tbody>
+                    <tr><td>Hospitalized</td><td>{{this.data.hospitalized | number}}</td></tr>
+                    <tr><td>Deaths</td><td>{{this.data.death | number}}</td></tr>
+                </tbody>
+            </table>
         </ng-container>
     </div>
 </div>

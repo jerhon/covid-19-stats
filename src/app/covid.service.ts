@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators'
 import { abbreviations } from '../states.json';
 
@@ -40,13 +40,18 @@ export interface NationData {
   positive:number;
   negative:number;
   death: number;
+  totalTestResults: number;
+  hospitalized: number;
 }
 
 export interface LocationData { 
   name: string;
+  abbreviation: string;
+  totalTestResults: number;
   positive: number;
   negative: number;
   death: number;
+  hospitalized: number;
 }
 
 @Injectable({
@@ -56,24 +61,28 @@ export class CovidService {
 
   constructor(private client: HttpClient) { }
 
+  stateData: LocationData[];
+
   getAllStateData(): Observable<LocationData[]> {
-    return this.client.get<StateData[]>("https://covidtracking.com/api/v1/states/current.json")
-      .pipe(map((d) => d.map((x) => ({ 
-        name: this.getStateName(x.state), 
-        positive: x.positive, 
-        negative: x.negative, 
-        death: x.death
-      }))));
+
+    if (this.stateData) { 
+      return of(this.stateData);
+    } else {
+      return this.client.get<StateData[]>("https://covidtracking.com/api/v1/states/current.json")
+        .pipe(map((d) => this.stateData = d.map((x) => ({ 
+          name: this.getStateName(x.state), 
+          abbreviation: x.state,
+          ...x
+        }))));
+    }
   }
 
   getUnitedStatesData(): Observable<LocationData> {
     return this.client.get<NationData[]>('https://covidtracking.com/api/v1/us/current.json')
-      .pipe(map((d) => 
-      ({
+      .pipe(map((d) => ({
         name: 'United States',
-        positive: d[0].positive,
-        negative: d[0].negative,
-        death: d[0].death
+        abbreviation: 'US',
+        ...d[0]
       })));
   }
 
@@ -94,7 +103,6 @@ export class CovidService {
   }
 
   getStateName(abbr: string) {
-    console.log(abbreviations);
     return abbreviations[abbr];
   }
 }

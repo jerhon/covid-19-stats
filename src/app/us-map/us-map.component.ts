@@ -1,8 +1,13 @@
-import { Component, OnInit, ViewChild, Output, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, ElementRef, Input, OnChanges } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface StateSelected {
   stateAbbreviation: string;
+}
+
+export interface StateStyle {
+  stateAbbreviation: string;
+  fillColor: string;
 }
 
 @Component({
@@ -10,11 +15,14 @@ export interface StateSelected {
   templateUrl: './us-map.component.html',
   styleUrls: ['./us-map.component.scss']
 })
-export class UsMapComponent implements OnInit {
+export class UsMapComponent implements OnInit, OnChanges {
 
   constructor() { }
 
   selectedPath: SVGPathElement;
+
+  @Input()
+  public stateStyles: StateStyle[];
 
   @Output()
   public stateClicked: Subject<StateSelected> = new Subject<StateSelected>();
@@ -27,7 +35,6 @@ export class UsMapComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-
     let paths = this.svg.nativeElement.getElementsByTagName("path");
     for (let i = 0; i < paths.length; i++) {
       let path = paths[i];
@@ -46,20 +53,24 @@ export class UsMapComponent implements OnInit {
         });
       }
     }
+
+    this.applyColors();
   }
 
-  getStatePath(state: string) {
-    let paths = this.svg.nativeElement.getElementsByTagName("path");
-    for (let i = 0; i < paths.length; i++) {
-      let path = paths[i];
-      if (path.id == state) {
-        return path;
-      }
-    } 
-    return null;
+  applyColors() {
+    if (this.svg) {
+      let paths = this.svg.nativeElement.getElementsByTagName("path");
+      for (let i = 0; i < paths.length; i++) {
+        let path = paths[i];
+        let stateStyle = this.stateStyles.find((s) => s.stateAbbreviation == path.id);
+        if (stateStyle) {
+          path.style.fill = stateStyle.fillColor;
+        }
+      } 
+    }
   }
 
-  setStateFill(state: string, fill: string) {
-    this.getStatePath(state).style.fill = fill;
+  ngOnChanges() {
+    this.applyColors();
   }
 }
