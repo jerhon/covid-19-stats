@@ -42,6 +42,7 @@ export interface NationData {
   death: number;
   totalTestResults: number;
   hospitalized: number;
+  lastModified: string;
 }
 
 export interface LocationData { 
@@ -52,6 +53,7 @@ export interface LocationData {
   negative: number;
   death: number;
   hospitalized: number;
+  dateModified: string;
 }
 
 @Injectable({
@@ -82,6 +84,7 @@ export class CovidService {
       .pipe(map((d) => ({
         name: 'United States',
         abbreviation: 'US',
+        dateModified: d[0].lastModified,
         ...d[0]
       })));
   }

@@ -31,10 +31,12 @@
                     <col width="*" /> 
                 </colgroup>
                 <tbody>
-                    <tr><td>Hospitalized</td><td>{{this.data.hospitalized | number}}</td></tr>
+                    <tr *ngIf="this.data.abbreviation!='US' && this.data.hospitalized"><td>Hospitalized</td><td>{{this.data.hospitalized | number}}</td></tr>
                     <tr><td>Deaths</td><td>{{this.data.death | number}}</td></tr>
                 </tbody>
             </table>
+
+            <p>Last updated: {{this.data.dateModified | date:'long' }}.</p>
         </ng-container>
     </div>
 </div>
