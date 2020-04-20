@@ -34,7 +34,7 @@ export class InteractiveMapComponent implements OnInit {
         let total = ld.reduce((pv, cv) => pv.positive > cv.positive ? pv : cv, ld[0]).positive;
         this.stateStyles = ld.map((ld) => ({ 
           stateAbbreviation: ld.abbreviation, 
-          fillColor: Math.ceil(255 - this.howTheHeckDoIScaleTheData(ld.positive, total) * 255).toString(16) + '0000'
+          fillColor: '#' + Math.ceil(255 - this.howTheHeckDoIScaleTheData(ld.positive, total) * 255).toString(16) + '0000'
         }));
       });
   }
