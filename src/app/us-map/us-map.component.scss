@@ -25,10 +25,10 @@ path#labels {
 
 @media(hover: hover) and (pointer: fine) {
     path:not(#labels):hover {
-        fill: #666 !important;
+        fill: #3C6 !important;
     }
 }
 
 .selected {
-    fill: #333 !important;
+    fill: #3C3 !important;
 }

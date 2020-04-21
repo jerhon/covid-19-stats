@@ -36,6 +36,30 @@ export interface StateData {
   hash: string;
 }
 
+export interface StateHistoricalData {
+  state: string;
+  positive: number;
+  positiveIncrease: number;
+  negative: number;
+  negativeIncrease: number;
+  pending: number;
+  totalTestResults: number;
+  totalTestResultsIncrease: number;
+  hospitalized: number;
+  hospitalizedIncrease: number;
+  death: number;
+  deathIncrease: number;
+  dateChecked: string;
+}
+
+export interface DeltaData {
+  positiveIncrease: number;
+  negativeIncrease: number;
+  totalTestResultsIncrease: number;
+  hospitalizedIncrease: number;
+  deathIncrease: number;
+}
+
 export interface NationData {
   positive:number;
   negative:number;
@@ -48,13 +72,15 @@ export interface NationData {
 export interface LocationData { 
   name: string;
   abbreviation: string;
-  totalTestResults: number;
   positive: number;
   negative: number;
   death: number;
+  totalTestResults: number;
   hospitalized: number;
   dateModified: string;
 }
+
+export type HistoricalLocationData = LocationData & DeltaData;
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +113,26 @@ export class CovidService {
         dateModified: d[0].lastModified,
         ...d[0]
       })));
+  }
+
+  getUnitedStatesHistoricalData(): Observable<HistoricalLocationData[]>  {
+    return this.client.get<StateHistoricalData[]>("https://covidtracking.com/api/v1/us/daily.json")
+      .pipe(map((d) => d.map((x) => ({
+        name: 'United States',
+        abbreviation: 'US',
+        dateModified: x.dateChecked,
+        ...x
+      }))));
+  }
+
+  getStateHistoricalData(state: string): Observable<HistoricalLocationData[]> {
+    return this.client.get<StateHistoricalData[]>("https://covidtracking.com/api/v1/states/" + state + "/daily.json")
+      .pipe(map((d) => d.map((x) => ({
+        name: this.getStateName(x.state),
+        abbreviation: x.state,
+        dateModified: x.dateChecked,
+        ...x
+      }))));
   }
 
   getStateData(stateAbbreviation: string) {

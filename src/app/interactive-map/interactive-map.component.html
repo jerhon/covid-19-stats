@@ -9,9 +9,9 @@
         </span>
         <ng-container *ngIf="this.data">
             <h1>{{this.data.name}}</h1>
-            <p>Documented cases of COVID-19.  All numbers are cumulative.  Some data points are not available for specific states.</p>
+            <p>Documented cases of COVID-19.  Some data points are not available for specific states.</p>
 
-            <h3>Test Results</h3>
+            <h3>Cumulative Test Results</h3>
             <table class="table table-vertical">
                 <colgroup>
                     <col width="75" />
@@ -24,7 +24,7 @@
                 </tbody>
             </table>
 
-            <h3>Outcomes</h3>
+            <h3>Cumulative Outcomes</h3>
             <table class="table table-vertical">
                 <colgroup>
                     <col width="75" />
@@ -38,5 +38,50 @@
 
             <p>Last updated: {{this.data.dateModified | date:'long' }}.</p>
         </ng-container>
+    </div>
+</div>
+
+<div class="clr-row" *ngIf="this.testHistoricalData && this.outcomeHistoricalData">
+    <div class="clr-col-lg-6"   >
+        <h3>Daily Testing Results</h3>
+        <p>Tracks daily increases in testing results for the past 21 days.</p>
+        <div style="height: 500px; margin-bottom: 70px; ">
+            <ngx-charts-bar-vertical-stacked
+            [scheme]="colorScheme"
+            [results]="this.testHistoricalData"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="true"
+            [legendPosition]="'left'"
+            [legendTitle]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [xAxisLabel]="'Date'"
+            [yAxisLabel]="'Test Results'"
+            [animations]="false"
+            [barPadding]="2">
+            </ngx-charts-bar-vertical-stacked>
+        </div>
+    </div>
+    <div class="clr-col-lg-6">
+        <h3>Daily Outcomes</h3>
+        <p>Tracks additional hospitalizations (when available) and deaths for the past 21 days.</p>
+        <div style="height: 500px; margin-bottom: 70px;">
+            <ngx-charts-bar-vertical-stacked
+            [scheme]="colorScheme"
+            [results]="this.outcomeHistoricalData"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="true"
+            [legendPosition]="'bottom'"
+            [legendTitle]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [xAxisLabel]="'Date'"
+            [yAxisLabel]="'Test Results'"
+            [animations]="false"
+            [barPadding]="2">
+            </ngx-charts-bar-vertical-stacked>
+        </div>  
     </div>
 </div>
