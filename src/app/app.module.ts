@@ -9,6 +9,8 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { DatasheetComponent } from './datasheet/datasheet.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { AboutPageComponent } from './about-page/about-page.component'
 
 
 @NgModule({
@@ -16,14 +18,17 @@ import { DatasheetComponent } from './datasheet/datasheet.component';
     AppComponent,
     UsMapComponent,
     InteractiveMapComponent,
-    DatasheetComponent
+    DatasheetComponent,
+    AboutPageComponent,
+    
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ClarityModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

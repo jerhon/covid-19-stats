@@ -7,6 +7,11 @@
             <a class="nav-link nav-text" [routerLink]="['map']" [routerLinkActive]="'active'">Interactive Map</a>
             <a class="nav-link nav-text" [routerLink]="['datasheet']" [routerLinkActive]="'active'">Datasheet</a>
         </div>
+        <div class="header-actions">
+            <a [routerLink]="['about']" class="nav-link nav-icon" aria-label="about">
+                <clr-icon shape="info-circle"></clr-icon>
+            </a>
+        </div>
     </clr-header>
     <div class="content-container">
         <div class="content-area">
