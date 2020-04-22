@@ -10,30 +10,18 @@ import { CovidService, LocationData, HistoricalLocationData } from '../covid.ser
 export class InteractiveMapComponent implements OnInit {
 
   public usData: LocationData;
+  public usTestHistoricalData: any;
+  public usOutcomeHistoricalData: any;
+
   public data: LocationData;
   public testHistoricalData: any;
   public outcomeHistoricalData: any;
 
   public stateStyles: StateStyle[] = [];
 
-  multi: any[];
-
-  // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Date';
-  showYAxisLabel: boolean = true;
-  yAxisLabel: string = 'Test Results';
-  animations: boolean = true;
-
   colorScheme = {
     domain: ['#880000', '#00DD6C']
   };
-
-
   
   constructor(private service: CovidService) { }
 
@@ -63,14 +51,18 @@ export class InteractiveMapComponent implements OnInit {
     this.service
       .getUnitedStatesHistoricalData()
       .subscribe((data) => {
-        this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-        this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
+        this.usTestHistoricalData = this.testHistoricalData = this.getResultsHistoricalDataSet(data);
+        this.usOutcomeHistoricalData = this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
       });
-
   }
 
   stateSelected(stateSelected: StateSelected) {
-    
+    // clear out current values.
+    this.data = null;
+    this.testHistoricalData = null;
+    this.outcomeHistoricalData = null;
+
+    // if a state is selected, get the data.
     if (stateSelected) {
       this.service.getStateData(stateSelected.stateAbbreviation).subscribe( 
         (stateData) => { 
@@ -86,6 +78,8 @@ export class InteractiveMapComponent implements OnInit {
       );
     } else {
       this.data = this.usData;
+      this.testHistoricalData = this.usTestHistoricalData;
+      this.outcomeHistoricalData = this.usOutcomeHistoricalData;
     }
   }
 
@@ -97,11 +91,11 @@ export class InteractiveMapComponent implements OnInit {
   getResultsHistoricalDataSet(data: HistoricalLocationData[]) {
     let mapDataSet = data.map((d) => ({ name: this.formatDate(d.dateModified), series: [
       {
-        name: "positive",
+        name: "Positive",
         value: d.positiveIncrease ?? 0
       },
       {
-        name: "negative",
+        name: "Negative",
         value: d.negativeIncrease ?? 0
       }
     ]}));
@@ -118,7 +112,6 @@ export class InteractiveMapComponent implements OnInit {
   }
 
   getOutcomesHistoricalDataset(data: HistoricalLocationData[], includeHospitalizations: boolean) {
-
     let deathSeries = data.map((d) => ({
       name: this.formatDate(d.dateModified),
       value: d.death

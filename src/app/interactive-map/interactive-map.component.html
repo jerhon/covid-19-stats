@@ -4,7 +4,7 @@
         </app-us-map>
     </div>
     <div class="clr-col-12 clr-col-lg-3" >
-        <span class="spinner spinner-lg" *ngIf="!this.data" style="margin-left: auto; margin-right: auto;">
+        <span class="spinner spinner-lg" *ngIf="!this.data">
             Loading...
         </span>
         <ng-container *ngIf="this.data">
@@ -41,12 +41,17 @@
     </div>
 </div>
 
-<div class="clr-row" *ngIf="this.testHistoricalData && this.outcomeHistoricalData">
-    <div class="clr-col-lg-6 graph"   >
+<div class="clr-row" >
+    <div class="clr-col-lg-6 graph">
         <h3>Daily Testing Results</h3>
         <p>Graphs daily testing results for the past 21 days.</p>
-        <div style="height: 500px; margin-bottom: 70px; ">
+        
+        <div class="chart-container" >
+            <span class="spinner spinner-lg" *ngIf="!this.testHistoricalData">
+                Loading...
+            </span>
             <ngx-charts-bar-vertical-stacked
+            *ngIf="this.testHistoricalData"
             [scheme]="colorScheme"
             [results]="this.testHistoricalData"
             [xAxis]="true"
@@ -58,7 +63,7 @@
             [showYAxisLabel]="false"
             [xAxisLabel]="'Date'"
             [yAxisLabel]="'Test Results'"
-            [animations]="false"
+            [animations]="true"
             [barPadding]="2">
             </ngx-charts-bar-vertical-stacked>
         </div>
@@ -66,8 +71,12 @@
     <div class="clr-col-lg-6 graph" >
         <h3>Cumulative Outcomes</h3>
         <p>Graphs cumulative deaths and hospitalizations (when available) for the past 21 days.  </p>
-        <div style="height: 500px; margin-bottom: 70px;">
-            <ngx-charts-line-chart [scheme]
+        <div class="chart-container" >
+            <span class="spinner spinner-lg" *ngIf="!this.outcomeHistoricalData">
+                Loading...
+            </span>
+            <ngx-charts-line-chart
+            *ngIf="this.outcomeHistoricalData"
             [scheme]="colorScheme"
             [results]="this.outcomeHistoricalData"
             [xAxis]="true"
@@ -79,7 +88,7 @@
             [showYAxisLabel]="false"
             [xAxisLabel]="'Date'"
             [yAxisLabel]="'Test Results'"
-            [animations]="false"
+            [animations]="true"
             >
             </ngx-charts-line-chart>
         </div>  
@@ -87,4 +96,6 @@
     <p class="clr-col-12">
         For both graphs, data points are captured as a snapshot in time for data available on the COVID Tracking Project at 4PM ET each day.
     </p>
+    <br />
+    <br />
 </div>
