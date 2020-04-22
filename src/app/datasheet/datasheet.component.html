@@ -1,25 +1,32 @@
 <div>
     <h1>United States Statistics</h1>
+    <h3>Test Results</h3>
     <table class="table table-vertical" *ngIf="this.usData" id="usTable">
         <colgroup>
             <col width="80" />
             <col width="*" /> 
         </colgroup>
         <tbody>
-            <tr><td colspan="2">Test Results</td></tr>
             <tr><td>Total Results</td><td>{{this.usData.totalTestResults | number}}</td></tr>
             <tr><td>Positive</td><td>{{this.usData.positive | number}}</td></tr>
             <tr><td>Negative</td><td>{{this.usData.negative | number}}</td></tr>
-            
-            <tr><td colspan="2">Outcomes</td></tr>
-            <tr><td>Hospitalized</td><td>{{this.usData.hospitalized | number}}</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Outcomes</h3>
+    <table class="table table-vertical" *ngIf="this.usData" id="usTable">
+        <colgroup>
+            <col width="80" />
+            <col width="*" /> 
+        </colgroup>
+        <tbody>
             <tr><td>Deaths</td><td>{{this.usData.death | number}}</td></tr>
         </tbody>
     </table>
 </div>
 
 <div>
-    <h1>State Statistics</h1>
+    <h1>Individual State Statistics</h1>
     <table class="table" *ngIf="this.statesData" id="stateTable">
         <colgroup>
             <col width="150" />

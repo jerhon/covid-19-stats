@@ -9,7 +9,8 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { DatasheetComponent } from './datasheet/datasheet.component';
-import { BarChartModule, NgxChartsModule } from '@swimlane/ngx-charts'
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { AboutPageComponent } from './about-page/about-page.component'
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { BarChartModule, NgxChartsModule } from '@swimlane/ngx-charts'
     UsMapComponent,
     InteractiveMapComponent,
     DatasheetComponent,
+    AboutPageComponent,
     
   ],
   imports: [

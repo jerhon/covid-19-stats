@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StateSelected, StateStyle } from '../us-map/us-map.component';
 import { CovidService, LocationData, HistoricalLocationData } from '../covid.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-interactive-map',
@@ -31,7 +30,7 @@ export class InteractiveMapComponent implements OnInit {
   animations: boolean = true;
 
   colorScheme = {
-    domain: ['#880000', '#00FF8C']
+    domain: ['#880000', '#00DD6C']
   };
 
 
@@ -65,12 +64,13 @@ export class InteractiveMapComponent implements OnInit {
       .getUnitedStatesHistoricalData()
       .subscribe((data) => {
         this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-        this.outcomeHistoricalData = this.getOutcomesHistoricalDataSet(data, false);
+        this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
       });
 
   }
 
   stateSelected(stateSelected: StateSelected) {
+    
     if (stateSelected) {
       this.service.getStateData(stateSelected.stateAbbreviation).subscribe( 
         (stateData) => { 
@@ -81,9 +81,9 @@ export class InteractiveMapComponent implements OnInit {
       this.service.getStateHistoricalData(stateSelected.stateAbbreviation).subscribe(
         (data) => {
           this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-          this.outcomeHistoricalData = this.getOutcomesHistoricalDataSet(data, true);
+          this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, true);
         }
-      )
+      );
     } else {
       this.data = this.usData;
     }
@@ -113,38 +113,39 @@ export class InteractiveMapComponent implements OnInit {
         mapDataSet.pop();
       }
 
-    return mapDataSet.slice(0, 21);
+    let result = mapDataSet.slice(0, 21).reverse();
+    return result;
   }
 
-  getOutcomesHistoricalDataSet(data: HistoricalLocationData[], showHospitalized: boolean) {
-    let mapDataSet = data.map((d) => {
-      
-      let series = [{
-        name: "deaths",
-        value: d.deathIncrease ?? 0
-      }];
+  getOutcomesHistoricalDataset(data: HistoricalLocationData[], includeHospitalizations: boolean) {
 
-      if (showHospitalized) {
-        series.push({
-          name: "hospitalized",
-          value: d.hospitalizedIncrease ?? 0
-        });
+    let deathSeries = data.map((d) => ({
+      name: this.formatDate(d.dateModified),
+      value: d.death
+    })).slice(0, 21).reverse();
+
+    let ret = [
+      {
+        name: "Deaths",
+        series: deathSeries
       }
+    ];
 
-      return { 
-        name: this.formatDate(d.dateModified), 
-        series 
-      }
-    });
+    if (data.filter((x) => x.hospitalized).length == 0) {
+      includeHospitalizations = false;
+    }
 
-    while (
-        mapDataSet[mapDataSet.length - 1].series[0].value == 0 &&
-        (mapDataSet[mapDataSet.length - 1].series.length == 1 || mapDataSet[mapDataSet.length - 1].series[1].value == 0)
-      ) {
-        mapDataSet.pop();
-      }
+    if (includeHospitalizations) {
+      let hospitalizedSeries = data.map((d) => ({
+        name: this.formatDate(d.dateModified),
+        value: d.hospitalized
+      })).slice(0, 21).reverse();
+      ret.push({
+        name: "Hospitalizations",
+        series: hospitalizedSeries
+      })
+    }
 
-    return mapDataSet.slice(0, 21);
+    return ret;
   }
-
 }
