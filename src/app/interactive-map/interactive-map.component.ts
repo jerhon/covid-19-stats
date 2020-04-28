@@ -25,8 +25,12 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
   constructor(private service: CovidService, private route: ActivatedRoute, private router: Router) { 
     route.paramMap.subscribe((params) => { 
       let region = params.get("region");
-      this.state = region;
-      this.refresh();
+      if (service.getStateName(region) || region.toLowerCase() == 'us') {
+        this.state = region;
+        this.refresh();
+      } else {
+        this.router.navigate(['../us'], { relativeTo: this.route })
+      }
     });
   }
 
@@ -101,8 +105,11 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
   }
 
   stateSelected(stateSelected: StateSelected) {
-    console.log(stateSelected);
-    this.router.navigate(['../' + stateSelected.stateAbbreviation.toLowerCase()], { relativeTo: this.route })
+    if (stateSelected) {
+      this.router.navigate(['../' + stateSelected.stateAbbreviation.toLowerCase()], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['../us'], {relativeTo: this.route});
+    }
   }
 
   getResultsHistoricalDataSet(data: HistoricalLocationData[]) {

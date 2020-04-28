@@ -17,7 +17,6 @@ export class ApiErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request)
       .pipe(catchError((err) => {
-        console.log('event', err);
         this.service.pushNetworkError({ status: err.status, message: err.statusText });
         return throwError(err);
       }));

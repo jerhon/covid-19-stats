@@ -24,10 +24,10 @@ export class AppComponent {
   public installApp() {
     let deferredInstall = (window as any).deferredInstall;
     if (deferredInstall) {
-      console.log('Deferred install...');
+      console.debug('Deferred install...');
       deferredInstall.prompt();
     } else {
-      console.log('No deferred install...');
+      console.debug('No deferred install...');
     }
   }
 
