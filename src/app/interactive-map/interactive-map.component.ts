@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { StateSelected, StateStyle } from '../us-map/us-map.component';
 import { CovidService, LocationData, HistoricalLocationData } from '../covid.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RefreshablePage } from '../app.component';
 
 @Component({
   selector: 'app-interactive-map',
   templateUrl: './interactive-map.component.html',
   styleUrls: ['./interactive-map.component.scss']
 })
-export class InteractiveMapComponent implements OnInit {
-
-  public usData: LocationData;
-  public usTestHistoricalData: any;
-  public usOutcomeHistoricalData: any;
+export class InteractiveMapComponent implements OnInit, RefreshablePage {
 
   public data: LocationData;
   public testHistoricalData: any;
   public outcomeHistoricalData: any;
+  public state: string;
 
   public stateStyles: StateStyle[] = [];
 
@@ -23,21 +22,24 @@ export class InteractiveMapComponent implements OnInit {
     domain: ['#880000', '#00DD6C']
   };
   
-  constructor(private service: CovidService) { }
-
-  howTheHeckDoIScaleTheData(positive: number, total: number) {
-    // combine a logarithmic scale + linear scale
-    return (Math.log(positive) / Math.log(total) * .65) + (positive / total * 0.35);
+  constructor(private service: CovidService, private route: ActivatedRoute, private router: Router) { 
+    route.paramMap.subscribe((params) => { 
+      let region = params.get("region");
+      if (service.getStateName(region) || region.toLowerCase() == 'us') {
+        this.state = region;
+        this.refresh();
+      } else {
+        this.router.navigate(['../us'], { relativeTo: this.route })
+      }
+    });
   }
-  
-  ngOnInit() {
-    this.service
-      .getUnitedStatesData()
-      .subscribe((us) =>  {
-        this.usData = us;
-        this.data = us;
-      });
 
+  refresh() {
+    this.refreshMap();
+    this.refreshData(this.state);
+  }
+
+  refreshMap() {
     this.service
       .getAllStateData()
       .subscribe((ld) => {
@@ -47,45 +49,67 @@ export class InteractiveMapComponent implements OnInit {
           fillColor: '#' + Math.ceil(255 - this.howTheHeckDoIScaleTheData(ld.positive, total) * 255).toString(16) + '0000'
         }));
       });
-
-    this.service
-      .getUnitedStatesHistoricalData()
-      .subscribe((data) => {
-        this.usTestHistoricalData = this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-        this.usOutcomeHistoricalData = this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
-      });
   }
 
-  stateSelected(stateSelected: StateSelected) {
+  refreshData(id: string) {
+
     // clear out current values.
     this.data = null;
     this.testHistoricalData = null;
     this.outcomeHistoricalData = null;
 
-    // if a state is selected, get the data.
-    if (stateSelected) {
-      this.service.getStateData(stateSelected.stateAbbreviation).subscribe( 
+    if (id == 'us') {          
+
+      this.service
+        .getUnitedStatesData()
+        .subscribe((us) =>  {
+          this.data = us;
+        });
+      
+      this.service
+        .getUnitedStatesHistoricalData()
+        .subscribe((data) => {
+          this.testHistoricalData = this.getResultsHistoricalDataSet(data);
+          this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
+        });
+      
+    } else {
+
+      this.service.getStateData(id).subscribe( 
         (stateData) => { 
             this.data = stateData;
         }
       );
         
-      this.service.getStateHistoricalData(stateSelected.stateAbbreviation).subscribe(
+      this.service.getStateHistoricalData(id).subscribe(
         (data) => {
           this.testHistoricalData = this.getResultsHistoricalDataSet(data);
           this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, true);
         }
       );
-    } else {
-      this.data = this.usData;
-      this.testHistoricalData = this.usTestHistoricalData;
-      this.outcomeHistoricalData = this.usOutcomeHistoricalData;
+
     }
+  }
+
+  howTheHeckDoIScaleTheData(positive: number, total: number) {
+    // combine a logarithmic scale + linear scale
+    return (Math.log(positive) / Math.log(total) * .65) + (positive / total * 0.35);
+  }
+  
+  ngOnInit() {
   }
 
   formatDate(dateString: string) {
     let dateObj = new Date(Date.parse(dateString));
     return (dateObj.getMonth() + 1) + "/" + dateObj.getDate();
+  }
+
+  stateSelected(stateSelected: StateSelected) {
+    if (stateSelected) {
+      this.router.navigate(['../' + stateSelected.stateAbbreviation.toLowerCase()], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['../us'], {relativeTo: this.route});
+    }
   }
 
   getResultsHistoricalDataSet(data: HistoricalLocationData[]) {

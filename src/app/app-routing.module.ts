@@ -6,8 +6,8 @@ import { AboutPageComponent } from './about-page/about-page.component';
 
 
 const routes: Routes = [
-  { path: '', pathMatch:'full', redirectTo: 'map' },
-  { path: 'map', component: InteractiveMapComponent },
+  { path: '', pathMatch:'full', redirectTo: 'map/us' },
+  { path: 'map/:region', component: InteractiveMapComponent },
   { path: 'datasheet', component: DatasheetComponent },
   { path: 'about', component: AboutPageComponent }
 ];

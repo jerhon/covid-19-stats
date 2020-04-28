@@ -1,21 +1,24 @@
+
 <clr-main-container>
     <clr-header>
         <div class="branding">
             <a [routerLink]="['map']"><span class="title">COVID-19 Stats</span></a>
         </div>
         <div class="header-nav" [clr-nav-level]="1">
-            <a class="nav-link nav-text" [routerLink]="['map']" [routerLinkActive]="'active'">Interactive Map</a>
+            <a class="nav-link nav-text" [routerLink]="['map', 'us']" [routerLinkActive]="'active'">Interactive Map</a>
             <a class="nav-link nav-text" [routerLink]="['datasheet']" [routerLinkActive]="'active'">Datasheet</a>
+            <a class="nav-link nav-text" [routerLink]="['about']" [routerLinkActive]="'active'">About</a>
         </div>
-        <div class="header-actions">
-            <a [routerLink]="['about']" class="nav-link nav-icon" aria-label="about">
-                <clr-icon shape="info-circle"></clr-icon>
+        <div class="header-actions" *ngIf="this.canInstall">
+            <a href="javascript://" class="nav-link nav-icon-text" aria-label="install application" (click)="this.installApp()">
+                <clr-icon shape="install"></clr-icon>
+                Install
             </a>
         </div>
     </clr-header>
     <div class="content-container">
         <div class="content-area">
-            <router-outlet></router-outlet>
+            <router-outlet (activate)="this.activateChild($event)" (deactivate)="this.deactivateChild()"></router-outlet>
         </div>
     </div>
 </clr-main-container>
@@ -31,5 +34,14 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="this.userNotAccepted = false">I Accept the Terms of Use</button>
+    </div>
+</clr-modal>
+<clr-modal [(clrModalOpen)]="this.alerts.length" [clrModalClosable]="false">
+    <h3 class="modal-title">Unknown API Error</h3>
+    <div class="modal-body">
+        <p>There are issues retrieving data for the application.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="refresh()">Refresh</button>
     </div>
 </clr-modal>
