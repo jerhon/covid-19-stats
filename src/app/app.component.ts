@@ -51,5 +51,4 @@ export class AppComponent {
   public deactivateChild() {
     this.childComponent = null;
   }
-  
 }

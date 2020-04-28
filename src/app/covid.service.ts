@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 import { abbreviations } from '../states.json';
 
 export interface StateData {
@@ -92,7 +92,6 @@ export class CovidService {
   stateData: LocationData[];
 
   getAllStateData(): Observable<LocationData[]> {
-
     if (this.stateData) { 
       return of(this.stateData);
     } else {
@@ -136,9 +135,7 @@ export class CovidService {
   }
 
   getStateData(stateAbbreviation: string) {
-
     let state = stateAbbreviation.length == 2 ? this.getStateName(stateAbbreviation) : stateAbbreviation;
-
     return this.getAllStateData()
       .pipe(
         map((sd) => {
