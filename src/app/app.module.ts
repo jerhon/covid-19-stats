@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,7 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InteractiveMapComponent } from './interactive-map/interactive-map.component';
 import { DatasheetComponent } from './datasheet/datasheet.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { AboutPageComponent } from './about-page/about-page.component'
+import { AboutPageComponent } from './about-page/about-page.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { ApiErrorInterceptor } from './api-error.interceptor';
 
 
 @NgModule({
@@ -19,7 +22,7 @@ import { AboutPageComponent } from './about-page/about-page.component'
     UsMapComponent,
     InteractiveMapComponent,
     DatasheetComponent,
-    AboutPageComponent,
+    AboutPageComponent
     
   ],
   imports: [
@@ -28,9 +31,16 @@ import { AboutPageComponent } from './about-page/about-page.component'
     HttpClientModule,
     ClarityModule,
     BrowserAnimationsModule,
-    NgxChartsModule
+    NgxChartsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [],
+  providers: [
+    { 
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiErrorInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

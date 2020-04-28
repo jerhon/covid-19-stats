@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Output, ElementRef, Input, OnChanges } from '@angular/core';
 import { Subject } from 'rxjs';
+import { RefreshablePage } from '../app.component';
 
 export interface StateSelected {
   stateAbbreviation: string;

@@ -142,7 +142,7 @@ export class CovidService {
     return this.getAllStateData()
       .pipe(
         map((sd) => {
-          let matchingState = sd.filter((x) => x.name == state);
+          let matchingState = sd.filter((x) => x.name.toLowerCase() == state.toLowerCase());
           if (matchingState.length > 0) {
             return matchingState[0];
           }
@@ -152,6 +152,6 @@ export class CovidService {
   }
 
   getStateName(abbr: string) {
-    return abbreviations[abbr];
+    return abbreviations[abbr.toUpperCase()];
   }
 }
