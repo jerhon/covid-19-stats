@@ -37,13 +37,15 @@ export class UsMapComponent implements OnInit, OnChanges {
 
   clearSelected() {
     let selected:string[] = [];
-    let paths = this.svg.nativeElement.getElementsByTagName("path");
-    for (let i = 0; i < paths.length; i++) {
-      let path = paths[i];
-      if (path.id != 'labels') {
-        if (path.classList.contains('selected')) {
-          path.classList.remove('selected');
-          selected.push(path.id);
+    if (this.svg) {
+      let paths = this.svg.nativeElement.getElementsByTagName("path");
+      for (let i = 0; i < paths.length; i++) {
+        let path = paths[i];
+        if (path.id != 'labels') {
+          if (path.classList.contains('selected')) {
+            path.classList.remove('selected');
+            selected.push(path.id);
+          }
         }
       }
     }
