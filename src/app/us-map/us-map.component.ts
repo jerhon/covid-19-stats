@@ -73,6 +73,10 @@ export class UsMapComponent implements OnInit, OnChanges {
   }
 
   applyColors() {
+    this.clearSelected();
+    if (this.statesHighlighted && this.statesHighlighted.length) {
+      this.setSelected(this.statesHighlighted);
+    }
     if (this.svg) {
       let paths = this.svg.nativeElement.getElementsByTagName("path");
       for (let i = 0; i < paths.length; i++) {
@@ -86,10 +90,6 @@ export class UsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.clearSelected();
-    if (this.statesHighlighted && this.statesHighlighted.length) {
-      this.setSelected(this.statesHighlighted);
-    }
     this.applyColors();
   }
 }
