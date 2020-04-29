@@ -14,7 +14,7 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
   public data: LocationData;
   public testHistoricalData: any;
   public outcomeHistoricalData: any;
-  public state: string;
+  public states: string[];
 
   public stateStyles: StateStyle[] = [];
 
@@ -25,18 +25,25 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
   constructor(private service: CovidService, private route: ActivatedRoute, private router: Router) { 
     route.paramMap.subscribe((params) => { 
       let region = params.get("region");
-      if (service.getStateName(region) || region.toLowerCase() == 'us') {
-        this.state = region;
-        this.refresh();
+      if (service.getStateName(region)) {
+        this.states = [ region ];
       } else {
-        this.router.navigate(['../us'], { relativeTo: this.route })
+        this.states = [ ];
+        if (region != 'us') {
+          this.router.navigate(['../us'], { relativeTo: this.route })
+        }
       }
+      this.refresh();
     });
   }
 
   refresh() {
     this.refreshMap();
-    this.refreshData(this.state);
+    if (this.states.length) {
+      this.refreshStateData(this.states[0]);
+    } else {
+      this.refreshUsData();
+    }
   }
 
   refreshMap() {
@@ -51,44 +58,45 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
       });
   }
 
-  refreshData(id: string) {
+  refreshUsData() {
+    // clear out current values.
+    this.data = null;
+    this.testHistoricalData = null;
+    this.outcomeHistoricalData = null;
+
+    this.service
+      .getUnitedStatesData()
+      .subscribe((us) =>  {
+        this.data = us;
+      });
+    
+    this.service
+      .getUnitedStatesHistoricalData()
+      .subscribe((data) => {
+        this.testHistoricalData = this.getResultsHistoricalDataSet(data);
+        this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
+      });
+  }
+
+  refreshStateData(state: string) {
 
     // clear out current values.
     this.data = null;
     this.testHistoricalData = null;
     this.outcomeHistoricalData = null;
 
-    if (id == 'us') {          
-
-      this.service
-        .getUnitedStatesData()
-        .subscribe((us) =>  {
-          this.data = us;
-        });
+    this.service.getStateData(state).subscribe( 
+      (stateData) => { 
+          this.data = stateData;
+      }
+    );
       
-      this.service
-        .getUnitedStatesHistoricalData()
-        .subscribe((data) => {
-          this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-          this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, false);
-        });
-      
-    } else {
-
-      this.service.getStateData(id).subscribe( 
-        (stateData) => { 
-            this.data = stateData;
-        }
-      );
-        
-      this.service.getStateHistoricalData(id).subscribe(
-        (data) => {
-          this.testHistoricalData = this.getResultsHistoricalDataSet(data);
-          this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, true);
-        }
-      );
-
-    }
+    this.service.getStateHistoricalData(state).subscribe(
+      (data) => {
+        this.testHistoricalData = this.getResultsHistoricalDataSet(data);
+        this.outcomeHistoricalData = this.getOutcomesHistoricalDataset(data, true);
+      }
+    );
   }
 
   howTheHeckDoIScaleTheData(positive: number, total: number) {
@@ -105,10 +113,11 @@ export class InteractiveMapComponent implements OnInit, RefreshablePage {
   }
 
   stateSelected(stateSelected: StateSelected) {
-    if (stateSelected) {
-      this.router.navigate(['../' + stateSelected.stateAbbreviation.toLowerCase()], { relativeTo: this.route });
+    let state = stateSelected.stateAbbreviation.toLowerCase();
+    if (this.states.find((x) => x == state)) {
+      this.router.navigate(['../us'], {relativeTo: this.route});      
     } else {
-      this.router.navigate(['../us'], {relativeTo: this.route});
+      this.router.navigate(['../' + state], { relativeTo: this.route });
     }
   }
 

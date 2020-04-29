@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, Output, ElementRef, Input, OnChanges } from '@angular/core';
 import { Subject } from 'rxjs';
-import { RefreshablePage } from '../app.component';
 
 export interface StateSelected {
   stateAbbreviation: string;
@@ -20,7 +19,8 @@ export class UsMapComponent implements OnInit, OnChanges {
 
   constructor() { }
 
-  selectedPath: SVGPathElement;
+  @Input()
+  public statesHighlighted: string[];
 
   @Input()
   public stateStyles: StateStyle[];
@@ -31,8 +31,29 @@ export class UsMapComponent implements OnInit, OnChanges {
   @ViewChild("map")
   public svg: ElementRef<SVGElement>;
 
-  ngOnInit() {
+  public statesElements: { [state: string]: SVGElement } = {};
 
+  ngOnInit() {}
+
+  clearSelected() {
+    let selected:string[] = [];
+    let paths = this.svg.nativeElement.getElementsByTagName("path");
+    for (let i = 0; i < paths.length; i++) {
+      let path = paths[i];
+      if (path.id != 'labels') {
+        if (path.classList.contains('selected')) {
+          path.classList.remove('selected');
+          selected.push(path.id);
+        }
+      }
+    }
+    return selected;
+  }
+
+  setSelected(states: string[]) {
+    for (let state of states) {
+      this.statesElements[state.toUpperCase()]?.classList?.add('selected');
+    }
   }
 
   ngAfterViewInit(): void {
@@ -40,17 +61,10 @@ export class UsMapComponent implements OnInit, OnChanges {
     for (let i = 0; i < paths.length; i++) {
       let path = paths[i];
       if (path.id != 'labels') {
+        this.statesElements[path.id] = path;
+
         path.addEventListener("click", (me: MouseEvent) => {
-          this.selectedPath?.classList?.remove('selected');
-          if (this.selectedPath == path)  {
-            this.selectedPath = null;
-            this.stateClicked.next(null);
-          } else {
-            this.selectedPath = path;
-            this.selectedPath.classList.add('selected');
-            this.stateClicked.next({ stateAbbreviation: path.id });
-          }
-          return false;
+          this.stateClicked.next({ stateAbbreviation: path.id });
         });
       }
     }
@@ -72,6 +86,10 @@ export class UsMapComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+    this.clearSelected();
+    if (this.statesHighlighted && this.statesHighlighted.length) {
+      this.setSelected(this.statesHighlighted);
+    }
     this.applyColors();
   }
 }

@@ -4,9 +4,9 @@ import { InteractiveMapComponent } from './interactive-map/interactive-map.compo
 import { DatasheetComponent } from './datasheet/datasheet.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 
-
 const routes: Routes = [
   { path: '', pathMatch:'full', redirectTo: 'map/us' },
+  { path: 'map', pathMatch:'full', redirectTo: 'map/us' },
   { path: 'map/:region', component: InteractiveMapComponent },
   { path: 'datasheet', component: DatasheetComponent },
   { path: 'about', component: AboutPageComponent }
