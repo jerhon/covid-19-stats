@@ -95,7 +95,7 @@ export class CovidService {
     if (this.stateData) { 
       return of(this.stateData);
     } else {
-      return this.client.get<StateData[]>("https://covidtracking.com/api/v1/states/current.json")
+      return this.client.get<StateData[]>("https://api.covidtracking.com/api/v1/states/current.json")
         .pipe(map((d) => this.stateData = d.map((x) => ({ 
           name: this.getStateName(x.state), 
           abbreviation: x.state,
@@ -105,7 +105,7 @@ export class CovidService {
   }
 
   getUnitedStatesData(): Observable<LocationData> {
-    return this.client.get<NationData[]>('https://covidtracking.com/api/v1/us/current.json')
+    return this.client.get<NationData[]>('https://api.covidtracking.com/api/v1/us/current.json')
       .pipe(map((d) => ({
         name: 'United States',
         abbreviation: 'US',
@@ -115,7 +115,7 @@ export class CovidService {
   }
 
   getUnitedStatesHistoricalData(): Observable<HistoricalLocationData[]>  {
-    return this.client.get<StateHistoricalData[]>("https://covidtracking.com/api/v1/us/daily.json")
+    return this.client.get<StateHistoricalData[]>("https://api.covidtracking.com/api/v1/us/daily.json")
       .pipe(map((d) => d.map((x) => ({
         name: 'United States',
         abbreviation: 'US',
@@ -125,7 +125,7 @@ export class CovidService {
   }
 
   getStateHistoricalData(state: string): Observable<HistoricalLocationData[]> {
-    return this.client.get<StateHistoricalData[]>("https://covidtracking.com/api/v1/states/" + state + "/daily.json")
+    return this.client.get<StateHistoricalData[]>("https://api.covidtracking.com/api/v1/states/" + state + "/daily.json")
       .pipe(map((d) => d.map((x) => ({
         name: this.getStateName(x.state),
         abbreviation: x.state,
